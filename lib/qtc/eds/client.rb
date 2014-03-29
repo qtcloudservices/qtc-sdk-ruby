@@ -1,4 +1,6 @@
 require_relative 'collection'
+require_relative 'user_collection'
+require_relative 'usergroup_collection'
 
 module Qtc
   module Eds
