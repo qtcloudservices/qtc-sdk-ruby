@@ -32,12 +32,20 @@ module Qtc
         Qtc::Eds::Collection.new(@client, "/objects/#{name}")
       end
 
+      ##
+      # Get user collection
+      #
+      # @return [Qtc::Eds::UserCollection]
       def users
-        Qtc::Eds::Collection.new(@client, "/users")
+        Qtc::Eds::UserCollection.new(@client)
       end
 
+      ##
+      # Get usergroup collection
+      #
+      # @return [Qtc::Eds::UsergroupCollection]
       def usergroups
-        Qtc::Eds::Collection.new(@client, "/usergroups")
+        Qtc::Eds::UsergroupCollection.new(@client)
       end
 
       ##
@@ -67,6 +75,11 @@ module Qtc
         @client.default_headers['Authorization'] = prev_auth if prev_auth
       end
 
+      ##
+      # Create user access token
+      #
+      # @param [String] username
+      # @param [String] password
       def create_user_token(username, password)
         body = {
             grant_type: 'password',
@@ -76,6 +89,10 @@ module Qtc
         @client.post('/auth/oauth2/token', body, {}, {'Content-Type' => 'application/x-www-form-urlencoded'})
       end
 
+      ##
+      # Revoke user access token
+      #
+      # @param [String] token
       def revoke_user_token(token)
         body = {
             token: token
