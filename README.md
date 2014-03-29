@@ -1,6 +1,6 @@
 # Qt Cloud Services SDK for Ruby
 
-This is Qt Cloud Services SDK for Node.js. What is Qt Cloud Services? See below:
+This is Qt Cloud Services SDK for Ruby. What is Qt Cloud Services? See below:
 
 * The Qt Cloud Services home page is at https://www.qtc.io
 * The Developer Documentation page is at https://developer.qtc.io
