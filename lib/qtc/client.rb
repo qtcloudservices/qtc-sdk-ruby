@@ -107,7 +107,6 @@ module Qtc
     # @param [String] path
     # @return [String]
     def request_uri(path)
-      puts "#{@api_url}#{path}"
       "#{@api_url}#{path}"
     end
 
