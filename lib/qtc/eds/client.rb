@@ -22,6 +22,13 @@ module Qtc
         @client = Qtc::Client.new(@options[:api_url], headers)
       end
 
+      ##
+      # Get Qtc::Client instance
+      #
+      # @return [Qtc::Client]
+      def http_client
+        @client
+      end
 
       ##
       # Get collection
@@ -48,12 +55,18 @@ module Qtc
         Qtc::Eds::UsergroupCollection.new(@client)
       end
 
+      def current_user
+        if @client.default_headers['Authorization']
+          @client.get('/user')
+        end
+      end
+
       ##
       # Set access token
       #
       # @param [String] access_token
       def access_token=(access_token)
-        if !token.blank?
+        if !access_token.nil?
           @client.default_headers['Authorization'] = "Bearer #{access_token}"
         else
           @client.default_headers.delete('Authorization')
