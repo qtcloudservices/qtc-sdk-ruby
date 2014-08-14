@@ -2,17 +2,24 @@ module Qtc
   module Cli
     class Mar < Thor
 
-      desc 'show INSTANCE_ID', 'Show runtime information'
+      desc 'show INSTANCE_ID', 'Show runtime instance information'
       def show(instance_id)
         instance_data = instance_info(instance_id)
         if instance_data
           token = instance_data['authorizations'][0]['access_token']
           result = client.get("/apps/#{instance_id}", nil,  {'Authorization' => "Bearer #{token}"})
-          puts result
+          puts "ID: #{result['id']}"
+          puts "Type: #{result['type']}"
+          puts "Name: #{result['name']}"
+          puts "Size: #{result['size']}"
+          puts "State: #{result['state']}"
+          puts "Structure: #{result['structure']}"
         end
+      rescue
+        abort("Error: Can't show instance information")
       end
 
-      desc 'scale INSTANCE_ID process=count', 'Scale processes'
+      desc 'scale INSTANCE_ID process=count', 'Scale runtime instance processes'
       def scale(instance_id, *types)
         scale = {}
         types.each do |type|
@@ -28,13 +35,13 @@ module Qtc
         end
       end
 
-      desc 'env INSTANCE_ID FOO=bar', 'Set runtime environment variables'
+      desc 'env INSTANCE_ID FOO=bar', 'Set runtime instance environment variables'
       def env(instance_id, *vars)
         env_vars = {}
         vars.each do |type|
           arr = type.strip.split("=")
-          if arr[0] && arr[1]
-            env_vars[arr[0]] = arr[1].to_i
+          if arr[0]
+            env_vars[arr[0]] = arr[1]
           end
         end
         instance_data = instance_info(instance_id)
@@ -43,12 +50,17 @@ module Qtc
           if env_vars.keys.size > 0
             client.put("/apps/#{instance_id}/env_vars", env_vars, {}, {'Authorization' => "Bearer #{token}"})
           else
-            puts client.get("/apps/#{instance_id}/env_vars", {}, {'Authorization' => "Bearer #{token}"})
+            env_vars = client.get("/apps/#{instance_id}/env_vars", {}, {'Authorization' => "Bearer #{token}"})
+            env_vars.each do |key, value|
+              puts "#{key}=#{value}"
+            end
           end
         end
+      rescue
+        abort("Error: can't show instance information")
       end
 
-      desc 'logs', 'show app logs'
+      desc 'logs INSTANCE_ID', 'Show runtime instance logs'
       option :offset
       option :limit
       def logs(instance_id)
@@ -63,6 +75,8 @@ module Qtc
             puts r['log']
           end
         end
+      rescue
+        abort("Error: can't show logs for this instance")
       end
 
       private
@@ -82,7 +96,6 @@ module Qtc
       def platform_client
         if @platform_client.nil?
           @platform_client = Qtc::Client.new(platform_base_url, {'Authorization' => "Bearer #{ENV['QTC_TOKEN']}"})
-          @platform_client.http_client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
         end
 
         @platform_client
@@ -93,7 +106,6 @@ module Qtc
       def client
         if @client.nil?
           @client = Qtc::Client.new(base_url)
-          @client.http_client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
         end
 
         @client
