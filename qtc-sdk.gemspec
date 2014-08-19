@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
   spec.name          = 'qtc-sdk'
   spec.version       = Qtc::VERSION
   spec.authors       = ['Jari Kolehmainen']
-  spec.email         = ['jari.kolehmainen@gmail.com']
+  spec.email         = ['jari.kolehmainen@digia.com']
   spec.summary       = %q{Qt Cloud Services SDK for Ruby}
   spec.description   = %q{Qt Cloud Services SDK for Ruby}
   spec.homepage      = 'https://github.com/jakolehm/qtc-sdk-ruby'
@@ -24,6 +24,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'webmock'
   spec.add_development_dependency 'vcr'
   spec.add_runtime_dependency 'httpclient', '~> 2.3'
-  spec.add_runtime_dependency 'thor'
   spec.add_runtime_dependency 'faye-websocket'
+  spec.add_runtime_dependency 'commander'
 end

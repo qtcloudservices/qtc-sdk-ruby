@@ -10,6 +10,5 @@ $:.unshift File.expand_path('../../lib', bin_file)
 
 STDOUT.sync = true
 
-require 'qtc_cli'
-
-QtcCli.start(ARGV)
+require 'commander/import'
+require 'qtc/cli/commands'
