@@ -17,6 +17,8 @@ module Qtc
       end
 
       def platform_client
+        raise ArgumentError.new('QTC_TOKEN environment variable is not set (you can get it from https://console.qtcloudservices.com)') unless ENV['QTC_TOKEN']
+        
         if @platform_client.nil?
           @platform_client = Qtc::Client.new(platform_base_url, {'Authorization' => "Bearer #{ENV['QTC_TOKEN']}"})
         end
