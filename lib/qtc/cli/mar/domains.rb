@@ -19,7 +19,7 @@ module Qtc
         instance_data = instance_info(instance_id)
         if instance_data
           token = instance_data['authorizations'][0]['access_token']
-          client.post("/apps/#{instance_id}/domains", {name: name}, {'Authorization' => "Bearer #{token}"})
+          client.post("/apps/#{instance_id}/domains", {name: name}, {}, {'Authorization' => "Bearer #{token}"})
         end
       end
 
