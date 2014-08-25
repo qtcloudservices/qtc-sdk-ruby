@@ -73,25 +73,21 @@ module Qtc
         abort("Error: can't show logs for this instance")
       end
 
-      def env(instance_id, *vars)
-        env_vars = {}
-        vars.each do |type|
-          arr = type.strip.split("=")
-          if arr[0]
-            env_vars[arr[0]] = arr[1]
-          end
-        end
+      def scale(instance_id, *vars)
         instance_data = instance_info(instance_id)
         if instance_data
           token = instance_data['authorizations'][0]['access_token']
-          if env_vars.keys.size > 0
-            client.put("/apps/#{instance_id}/env_vars", env_vars, {}, {'Authorization' => "Bearer #{token}"})
-          else
-            env_vars = client.get("/apps/#{instance_id}/env_vars", {}, {'Authorization' => "Bearer #{token}"})
-            env_vars.each do |key, value|
-              puts "#{key}=#{value}"
+          app = client.get("/apps/#{instance_id}", nil,  {'Authorization' => "Bearer #{token}"})
+          structure = app['structure']
+          scale = {}
+          vars.each do |type|
+            arr = type.strip.split("=")
+            if arr[0] && arr[1]
+              raise ArgumentError.new("#{arr[0]} is not defined in Procfile") unless structure.has_key?(arr[0])
+              scale[arr[0]] = arr[1]
             end
           end
+          client.post("/apps/#{instance_id}/scale", scale, {}, {'Authorization' => "Bearer #{token}"})
         end
       end
 
