@@ -9,7 +9,7 @@ module Qtc
         vars.each do |type|
           arr = type.strip.split("=")
           if arr[0]
-            env_vars[arr[0]] = arr[1]
+            env_vars[arr[0]] = arr[1..-1].join("=")
           end
         end
         instance_data = instance_info(instance_id)
