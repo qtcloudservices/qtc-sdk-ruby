@@ -7,10 +7,10 @@ module Qtc
       def list
         accounts = platform_client.get('/user/accounts')
         accounts['results'].each do |account|
-          print color("=> #{account['name']}: #{account['id']}", :bold)
+          print color("== #{account['name']}: #{account['id']}", :cyan)
           instances = platform_client.get("/accounts/#{account['id']}/instances", {provider: 'eds'})
           instances['results'].each do |instance|
-            print color(" * #{instance['id']} #{instance['name']}", :gray)
+            say(" ~ <%= color('#{instance['id']}', :green) %> #{instance['name']} <%= color('#{instance['tags'].join(', ')}', :yellow) %>")
           end
           puts ''
         end

@@ -9,6 +9,19 @@ module Qtc
 
         protected
 
+        def resolve_instance_id(options)
+          if options.app.nil?
+            instance_id = extract_app_in_dir(options.remote)
+          else
+            instance_id = options.app
+          end
+          if instance_id.nil?
+            raise ArgumentError.new('Cannot resolve current app, please use --app APP')
+          end
+
+          instance_id
+        end
+
         ##
         # @return [Qtc::Client]
         def client

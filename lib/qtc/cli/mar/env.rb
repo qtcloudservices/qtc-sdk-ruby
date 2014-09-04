@@ -4,12 +4,17 @@ module Qtc
   module Cli
     class Mar::Env < Mar::Base
 
-      def set(instance_id, *vars)
+      def set(vars, options)
+        instance_id = resolve_instance_id(options)
         env_vars = {}
         vars.each do |type|
           arr = type.strip.split("=")
           if arr[0]
-            env_vars[arr[0]] = arr[1..-1].join("=")
+            if arr[1].nil? || arr[1] == ""
+              env_vars[arr[0]] = nil
+            else
+              env_vars[arr[0]] = arr[1..-1].join("=")
+            end
           end
         end
         instance_data = instance_info(instance_id)
@@ -19,7 +24,8 @@ module Qtc
         end
       end
 
-      def show(instance_id)
+      def show(options)
+        instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
           token = instance_data['authorizations'][0]['access_token']

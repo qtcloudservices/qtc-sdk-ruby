@@ -7,22 +7,25 @@ module Qtc
       def list
         accounts = platform_client.get('/user/accounts')
         accounts['results'].each do |account|
-          print color("=> #{account['name']}: #{account['id']}", :bold)
+          print color("== #{account['name']}: #{account['id']}")
           instances = platform_client.get("/accounts/#{account['id']}/instances", {provider: 'mar'})
           instances['results'].each do |instance|
-            print color(" * #{instance['id']} #{instance['name']}", :gray) if instance['config']['MAR_GIT_ADDRESS']
+            if instance['config']['MAR_GIT_ADDRESS']
+              say(" ~ <%= color('#{instance['id']}', :green) %> #{instance['name']} <%= color('#{instance['tags'].join(', ')}', :yellow) %>")
+            end
           end
           puts ''
         end
       end
 
-      def show(instance_id)
+      def show(options)
+        instance_id = resolve_instance_id(options)
+
         instance_data = instance_info(instance_id)
         if instance_data
           token = instance_data['authorizations'][0]['access_token']
           result = client.get("/apps/#{instance_id}", nil,  {'Authorization' => "Bearer #{token}"})
-          puts "ID: #{result['id']}"
-          puts "Type: #{result['type']}"
+          say "Id: #{result['id']}"
           puts "Name: #{result['name']}"
           puts "Size: #{result['size']}"
           puts "State: #{result['state']}"
@@ -48,7 +51,8 @@ module Qtc
         puts response['id']
       end
 
-      def restart(instance_id)
+      def restart(options)
+        instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
           token = instance_data['authorizations'][0]['access_token']
@@ -57,30 +61,36 @@ module Qtc
 
       end
 
-      def logs(instance_id, options)
+      def logs(options)
         offset = options.offset || 0
         limit = options.limit || 100
+        stream = options.stream || nil
 
+        instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
           token = instance_data['authorizations'][0]['access_token']
           result = client.get("/apps/#{instance_id}/logs", {offset: offset, limit: limit}, {'Authorization' => "Bearer #{token}"})
           result['results'].each do |r|
-            puts r['log']
+            line = ''
+            line << "[#{r['time']}] " if options.timestamp == true
+            line << r['log']
+            puts line
           end
         end
       rescue
         abort("Error: can't show logs for this instance")
       end
 
-      def scale(instance_id, *vars)
+      def scale(args, options)
+        instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
           token = instance_data['authorizations'][0]['access_token']
           app = client.get("/apps/#{instance_id}", nil,  {'Authorization' => "Bearer #{token}"})
           structure = app['structure']
           scale = {}
-          vars.each do |type|
+          args.each do |type|
             arr = type.strip.split("=")
             if arr[0] && arr[1]
               raise ArgumentError.new("#{arr[0]} is not defined in Procfile") unless structure.has_key?(arr[0])
@@ -89,22 +99,6 @@ module Qtc
           end
           client.post("/apps/#{instance_id}/scale", scale, {}, {'Authorization' => "Bearer #{token}"})
         end
-      end
-
-      private
-
-      ##
-      # @return [Qtc::Client]
-      def client
-        if @client.nil?
-          @client = Qtc::Client.new(base_url)
-        end
-
-        @client
-      end
-
-      def base_url
-        ENV['QTC_MAR_URL'] || 'https://mar-eu-1.qtc.io/v1'
       end
     end
   end

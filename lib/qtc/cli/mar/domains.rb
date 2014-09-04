@@ -4,7 +4,8 @@ module Qtc
   module Cli
     class Mar::Domains < Mar::Base
 
-      def list(instance_id)
+      def list(options)
+        instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
           token = instance_data['authorizations'][0]['access_token']
@@ -15,7 +16,8 @@ module Qtc
         end
       end
 
-      def create(instance_id, name)
+      def create(name, options)
+        instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
           token = instance_data['authorizations'][0]['access_token']
@@ -23,7 +25,8 @@ module Qtc
         end
       end
 
-      def destroy(instance_id, name)
+      def destroy(name, options)
+        instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
           token = instance_data['authorizations'][0]['access_token']

@@ -1,3 +1,4 @@
+require 'inifile'
 module Qtc
   module Cli
     module Common
@@ -16,14 +17,54 @@ module Qtc
         instance_data
       end
 
-      def platform_client
-        raise ArgumentError.new('QTC_TOKEN environment variable is not set (you can get it from https://console.qtcloudservices.com)') unless ENV['QTC_TOKEN']
+      def platform_client(token = nil)
+        inifile['platform']['token'] = token unless token.nil?
+        unless inifile['platform']['token']
+          raise ArgumentError.new("Please login first using: qtc-cli login")
+        end
 
         if @platform_client.nil?
-          @platform_client = Qtc::Client.new(platform_base_url, {'Authorization' => "Bearer #{ENV['QTC_TOKEN']}"})
+          @platform_client = Qtc::Client.new(platform_base_url, {'Authorization' => "Bearer #{inifile['platform']['token']}"})
         end
 
         @platform_client
+      end
+
+      def ini_filename
+        File.join(Dir.home, '/.qtc_client')
+      end
+
+      def inifile
+        if @inifile.nil?
+          if File.exists?(ini_filename)
+            @inifile = IniFile.load(ini_filename)
+          else
+            @inifile = IniFile.new
+          end
+        end
+
+        @inifile
+      end
+
+      ##
+      # @param [String,NilClass]
+      # @return [String]
+      def extract_app_in_dir(remote = nil)
+        if File.exists?(File.expand_path('./.git/config'))
+          remotes = []
+          git_remotes = `git remote -v`
+          git_remotes.lines.each do |line|
+            if match = line.match(/#{remote}\s+git@git-mar-(.*)\:(.*) \(push\)/)
+              remotes << match[2]
+            end
+          end
+          apps = remotes.uniq
+          if apps.size == 1
+            return apps[0]
+          elsif apps.size > 1
+            raise ArgumentError.new("Multiple app git remotes\nSpecify app with --remote REMOTE or --app APP")
+          end
+        end
       end
 
       ##
