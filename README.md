@@ -14,6 +14,7 @@ http://developer.qtc.io/qtc/getting-started?snippets=ruby
 If you are looking for service specific guides, please see:
 
 * [Enginio Data Storage](http://developer.qtc.io/eds/getting-started?snippets=ruby)
+* [Managed Application Runtime](http://developer.qtc.io/mar/getting-started?snippets=ruby)
 
 
 ## Installation
