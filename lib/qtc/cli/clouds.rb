@@ -19,7 +19,7 @@ module Qtc
 
         response = platform_client(pass).get('/user/accounts', {}) rescue nil
         if response
-          inifile.save
+          inifile.save(filename: ini_filename)
         else
           print color('Invalid Personal Access Token', :red)
         end

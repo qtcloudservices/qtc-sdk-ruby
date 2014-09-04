@@ -43,6 +43,10 @@ module Qtc
           end
         end
 
+        unless @inifile['platform']
+          @inifile['platform'] = {}
+        end
+
         @inifile
       end
 
