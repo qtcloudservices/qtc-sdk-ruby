@@ -7,8 +7,8 @@ module Qtc
 
 
       def create(options)
-        raise ArgumentError.new("--key=#{opts.key} is not a file") unless File.exists(opts.key)
-        raise ArgumentError.new("--cert=#{opts.cert} is not a file") unless File.exists(opts.cert)
+        raise ArgumentError.new("--key=#{options.key} is not a file") unless File.exists?(File.expand_path(options.key))
+        raise ArgumentError.new("--cert=#{options.cert} is not a file") unless File.exists?(File.expand_path(options.cert))
 
         instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
@@ -16,8 +16,8 @@ module Qtc
           token = instance_data['authorizations'][0]['access_token']
           data = {
             name: instance_id,
-            privateKey: File.read(opts.key),
-            certificateBody: File.read(opts.cert)
+            privateKey: File.read(File.expand_path(options.key)),
+            certificateBody: File.read(File.expand_path(options.cert))
           }
           client.post("/apps/#{instance_id}/ssl_certificate", data, {}, {'Authorization' => "Bearer #{token}"})
         end
