@@ -2,6 +2,7 @@ require_relative 'apps'
 require_relative 'domains'
 require_relative 'ssl_certificates'
 require_relative 'env'
+require_relative 'repository'
 
 command 'mar list' do |c|
   c.syntax = 'qtc-cli mar list'
@@ -143,5 +144,25 @@ command 'mar ssl:remove' do |c|
   c.option '--remote REMOTE', String, 'Git remote to use, eg "staging"'
   c.action do |args, options|
     Qtc::Cli::Mar::SslCertificates.new.destroy(options)
+  end
+end
+
+command 'mar repo:purge_cache' do |c|
+  c.syntax = 'qtc-cli mar repo:purge_cache'
+  c.description = 'Delete remote repository build cache contents'
+  c.option '--app APP', String, 'App instance id'
+  c.option '--remote REMOTE', String, 'Git remote to use, eg "staging"'
+  c.action do |args, options|
+    Qtc::Cli::Mar::Repository.new.purge_cache(options)
+  end
+end
+
+command 'mar repo:reset' do |c|
+  c.syntax = 'qtc-cli mar repo:reset'
+  c.description = 'Reset remote git repository'
+  c.option '--app APP', String, 'App instance id'
+  c.option '--remote REMOTE', String, 'Git remote to use, eg "staging"'
+  c.action do |args, options|
+    Qtc::Cli::Mar::Repository.new.reset(options)
   end
 end
