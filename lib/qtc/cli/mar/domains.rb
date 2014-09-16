@@ -30,7 +30,7 @@ module Qtc
         instance_data = instance_info(instance_id)
         if instance_data
           token = instance_data['authorizations'][0]['access_token']
-          client.delete("/apps/#{instance_id}/domains/#{name}", nil, nil, {'Authorization' => "Bearer #{token}"})
+          client.delete("/apps/#{instance_id}/domains/#{name}", nil, {}, {'Authorization' => "Bearer #{token}"})
         end
       end
     end
