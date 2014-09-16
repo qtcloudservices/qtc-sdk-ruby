@@ -130,6 +130,7 @@ command 'mar ssl:add' do |c|
   c.option '--remote REMOTE', String, 'Git remote to use, eg "staging"'
   c.option '--key PATH', String, 'Path to private key file'
   c.option '--cert PATH', String, 'Path to certificate file'
+  c.option '--chain PATH', String, 'Path to certificate chain file'
   c.action do |args, options|
     raise ArgumentError.new("--key is required") unless options.key
     raise ArgumentError.new("--cert is required") unless options.cert

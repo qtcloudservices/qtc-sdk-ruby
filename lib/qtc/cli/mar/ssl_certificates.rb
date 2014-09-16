@@ -9,6 +9,9 @@ module Qtc
       def create(options)
         raise ArgumentError.new("--key=#{options.key} is not a file") unless File.exists?(File.expand_path(options.key))
         raise ArgumentError.new("--cert=#{options.cert} is not a file") unless File.exists?(File.expand_path(options.cert))
+        unless options.chain.nil?
+          raise ArgumentError.new("--chain=#{options.chain} is not a file") unless File.exists?(File.expand_path(options.chain))
+        end
 
         instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
@@ -19,6 +22,9 @@ module Qtc
             privateKey: File.read(File.expand_path(options.key)),
             certificateBody: File.read(File.expand_path(options.cert))
           }
+          unless options.chain.nil?
+            data[:certificateChain] = File.read(File.expand_path(options.chain))
+          end
           client.post("/apps/#{instance_id}/ssl_certificate", data, {}, {'Authorization' => "Bearer #{token}"})
         end
       end
