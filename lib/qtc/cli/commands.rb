@@ -1,5 +1,7 @@
 require 'qtc/version'
 
+module Qtc::Cli; end;
+
 program :name, 'qtc-cli'
 program :version, Qtc::VERSION
 program :description, 'Command line interface for Qt Cloud Services'

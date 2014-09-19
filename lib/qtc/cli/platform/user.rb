@@ -1,7 +1,7 @@
 require 'qtc/client'
 require_relative '../common'
 
-module Qtc::Cli:Platform
+module Qtc::Cli::Platform
   class User
     include Qtc::Cli::Common
 

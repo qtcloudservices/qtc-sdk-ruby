@@ -1,9 +1,8 @@
+module Qtc::Cli::Platform; end;
+
 require_relative 'clouds'
 require_relative 'user'
 require_relative 'ssh_keys'
-
-module Qtc::Cli::Platform
-end
 
 command 'clouds' do |c|
   c.syntax = 'qtc-cli clouds'
