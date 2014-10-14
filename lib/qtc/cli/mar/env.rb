@@ -8,12 +8,12 @@ module Qtc
         instance_id = resolve_instance_id(options)
         env_vars = {}
         vars.each do |type|
-          arr = type.strip.split("=")
+          arr = type.strip.split('=', 2)
           if arr[0]
-            if arr[1].nil? || arr[1] == ""
+            if arr[1].nil? || arr[1] == ''
               env_vars[arr[0]] = nil
             else
-              env_vars[arr[0]] = arr[1..-1].join("=")
+              env_vars[arr[0]] = arr[1]
             end
           end
         end
