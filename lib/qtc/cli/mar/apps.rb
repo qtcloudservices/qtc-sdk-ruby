@@ -78,8 +78,6 @@ module Qtc
             puts line
           end
         end
-      rescue
-        abort("Error: can't show logs for this instance")
       end
 
       def scale(args, options)
