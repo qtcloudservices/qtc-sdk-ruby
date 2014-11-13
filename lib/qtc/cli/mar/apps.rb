@@ -7,14 +7,14 @@ module Qtc
       def list
         accounts = platform_client.get('/user/accounts')
         accounts['results'].each do |account|
-          print color("== #{account['name']}: #{account['id']}")
           instances = platform_client.get("/accounts/#{account['id']}/instances", {provider: 'mar'})
-          instances['results'].each do |instance|
-            if instance['config']['MAR_GIT_ADDRESS']
+          if instances['results'].size > 0
+            print color("== #{account['name']} (#{account['datacenter']['id']}): #{account['id']}")
+            instances['results'].each do |instance|
               say(" ~ <%= color('#{instance['id']}', :green) %> #{instance['name']} <%= color('#{instance['tags'].join(', ')}', :yellow) %>")
             end
+            puts ''
           end
-          puts ''
         end
       end
 
@@ -25,9 +25,9 @@ module Qtc
         if instance_data
           token = instance_data['authorizations'][0]['access_token']
           result = client.get("/apps/#{instance_id}", nil,  {'Authorization' => "Bearer #{token}"})
-          say "Id: #{result['id']}"
+          puts "Id: #{result['id']}"
           puts "Name: #{result['name']}"
-          puts "Size: #{result['size']}"
+          puts "Size: #{size_mapping[result['size'].to_s] || result['size']}"
           puts "State: #{result['state']}"
           puts "Structure: #{JSON.pretty_generate(result['structure'])}"
           status = client.get("/apps/#{instance_id}/status", nil,  {'Authorization' => "Bearer #{token}"})
@@ -97,6 +97,15 @@ module Qtc
           end
           client.post("/apps/#{instance_id}/scale", scale, {}, {'Authorization' => "Bearer #{token}"})
         end
+      end
+
+      def size_mapping
+        {
+            '1' => 'mini',
+            '2' => 'small',
+            '4' => 'medium',
+            '8' => 'large'
+        }
       end
     end
   end
