@@ -1,8 +1,17 @@
 module Qtc::Cli::Platform; end;
 
+require_relative 'datacenters'
 require_relative 'clouds'
 require_relative 'user'
 require_relative 'ssh_keys'
+
+command 'datacenters' do |c|
+  c.syntax = 'qtc-cli datacenters'
+  c.description = 'List all datacenters'
+  c.action do |args, options|
+    Qtc::Cli::Platform::Datacenters.new.list
+  end
+end
 
 command 'clouds' do |c|
   c.syntax = 'qtc-cli clouds'

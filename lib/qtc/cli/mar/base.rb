@@ -19,7 +19,19 @@ module Qtc
             raise ArgumentError.new('Cannot resolve current app, please use --app APP')
           end
 
+          self.datacenter_id = resolve_datacenter_id(instance_id)
+
           instance_id
+        end
+
+        ##
+        # @param [String] instance_id
+        # @return [String,NilClass]
+        def resolve_datacenter_id(instance_id)
+          match = instance_id.to_s.match(/^(mar-\w+-\w+)-\w+/)
+          if match[1]
+            match[1]
+          end
         end
 
         ##
@@ -32,8 +44,15 @@ module Qtc
           @client
         end
 
+        private
+
         def base_url
-          ENV['QTC_MAR_URL'] || 'https://mar-eu-1.qtc.io/v1'
+          datacenters = inifile['datacenters'] || {}
+          if !self.datacenter_id.nil? && datacenters.has_key?(self.datacenter_id)
+            "#{datacenters[self.datacenter_id]}/v1"
+          else
+            raise ArgumentError.new('Unknown datacenter. Please run qtc-cli datacenters to get latest list of your datacenters')
+          end
         end
       end
     end

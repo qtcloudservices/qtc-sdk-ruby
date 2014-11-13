@@ -3,6 +3,8 @@ module Qtc
   module Cli
     module Common
 
+      attr_accessor :datacenter_id
+
       def instance_info(instance_id)
         instance_data = platform_client.get("/instances/#{instance_id}")
         if instance_data
@@ -79,10 +81,6 @@ module Qtc
         end
 
         @client
-      end
-
-      def base_url
-        ENV['QTC_MAR_URL'] || 'https://mar-eu-1.qtc.io/v1'
       end
 
       def platform_base_url
