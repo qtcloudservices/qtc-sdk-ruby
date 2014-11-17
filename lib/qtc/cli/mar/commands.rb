@@ -37,7 +37,6 @@ command 'mar create' do |c|
   c.syntax = 'qtc-cli mar create CLOUD_ID NAME'
   c.description = 'Create a new app instance'
   c.option '--size SIZE', String, 'App runtime size'
-  c.option '--datacenter DATACENTER', String, 'Datacenter id'
   c.action do |args, options|
     raise ArgumentError.new('CLOUD_ID is required') if args[0].nil?
     raise ArgumentError.new('NAME is required') if args[1].nil?
