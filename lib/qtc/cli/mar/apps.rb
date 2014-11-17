@@ -41,7 +41,6 @@ module Qtc
         data = {
             name: name,
             serviceProviderId: 'mar',
-            datacenterId: options.datacenter || 'eu-1',
             config: {
                 runtimeSize: size,
                 runtimeType: 'app'
