@@ -9,7 +9,6 @@ module Qtc::Cli::Platform
       datacenters = platform_client.get('/datacenters')
       inifile['datacenters'] = {}
 
-      puts datacenters
       datacenters['results'].each do |datacenter|
         datacenter['services'].each do |service|
           inifile['datacenters']["#{service['id']}-#{datacenter['id']}"] = service['url']
