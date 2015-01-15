@@ -3,6 +3,7 @@ require_relative 'domains'
 require_relative 'ssl_certificates'
 require_relative 'env'
 require_relative 'repository'
+require_relative 'debug'
 
 command 'mar list' do |c|
   c.syntax = 'qtc-cli mar list'
@@ -164,5 +165,22 @@ command 'mar repo:reset' do |c|
   c.option '--remote REMOTE', String, 'Git remote to use, eg "staging"'
   c.action do |args, options|
     Qtc::Cli::Mar::Repository.new.reset(options)
+  end
+end
+
+command 'mar local:run' do |c|
+  c.syntax = 'qtc-cli mar local:run'
+  c.option '--clean', String, 'Force clean build'
+  c.description = 'Debug mar app locally (requires docker)'
+  c.action do |args, options|
+    Qtc::Cli::Mar::Debug.new.local_debug(args, options)
+  end
+end
+
+command 'mar local:build_slug' do |c|
+  c.syntax = 'qtc-cli mar local:build_slug'
+  c.description = 'Build mar app slug locally (requires docker)'
+  c.action do |args, options|
+    Qtc::Cli::Mar::Debug.new.local_build(options)
   end
 end
