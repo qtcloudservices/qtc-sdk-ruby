@@ -47,7 +47,11 @@ module Qtc
 
     def build_slug(app_home)
       docker_id = nil
-      Open3.popen3("docker run -d -v #{app_home}:/tmp/gitrepo:r qtcs/slugbuilder") {|stdin, stdout, stderr, wait_thr|
+      run_opts = ''
+      if File.exists?("#{app_home}/.env")
+        run_opts << "--env-file=#{app_home}/.env"
+      end
+      Open3.popen3("docker run -d #{run_opts} -v #{app_home}:/tmp/gitrepo:r qtcs/slugbuilder") {|stdin, stdout, stderr, wait_thr|
         docker_id = stdout.gets
         if docker_id
           docker_id.strip!
