@@ -12,3 +12,4 @@ never_trace!
 require_relative 'platform/commands'
 require_relative 'eds/commands'
 require_relative 'mar/commands'
+require_relative 'mdb/commands'
