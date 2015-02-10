@@ -98,6 +98,20 @@ module Qtc
         end
       end
 
+      def exec(command, options)
+        instance_id = resolve_instance_id(options)
+        instance_data = instance_info(instance_id)
+        if instance_data
+          token = instance_data['authorizations'][0]['access_token']
+          data = {
+              cmd: command,
+              processId: options.process
+          }
+          result = client.post("/apps/#{instance_id}/exec", data, {}, {'Authorization' => "Bearer #{token}"})
+          puts result['stdout']
+        end
+      end
+
       def size_mapping
         {
             '1' => 'mini',

@@ -184,3 +184,16 @@ command 'mar local:build_slug' do |c|
     Qtc::Cli::Mar::Debug.new.local_build(options)
   end
 end
+
+command 'mar exec' do |c|
+  c.syntax = 'qtc-cli mar exec <cmd>'
+  c.description = 'Execute command inside app process'
+  c.option '--process PROCESS_ID', String, 'App process id'
+  c.option '--app APP', String, 'App instance id'
+  c.option '--remote REMOTE', String, 'Git remote to use, eg "staging"'
+  c.action do |args, options|
+    raise ArgumentError.new("command required") if args.size == 0
+    raise ArgumentError.new("--process is required") unless options.process
+    Qtc::Cli::Mar::Apps.new.exec(args.join(" "), options)
+  end
+end
