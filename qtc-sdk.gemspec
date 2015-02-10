@@ -22,10 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.5'
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec', '~> 2.14.0'
-  spec.add_development_dependency 'webmock'
-  spec.add_development_dependency 'vcr'
   spec.add_runtime_dependency 'httpclient', '~> 2.3'
-  spec.add_runtime_dependency 'faye-websocket'
   spec.add_runtime_dependency 'commander'
   spec.add_runtime_dependency 'inifile'
 end
