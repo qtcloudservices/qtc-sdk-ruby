@@ -118,7 +118,7 @@ module Qtc
       end
 
       def platform_base_url
-        ENV['QTC_PLATFORM_URL'] || 'http://api.qtc.dev:4000/v1'
+        ENV['QTC_PLATFORM_URL'] || 'https://api.qtc.io/v1'
       end
     end
   end
