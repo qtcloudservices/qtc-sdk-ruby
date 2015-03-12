@@ -1,4 +1,5 @@
 require_relative 'base'
+require "base64"
 
 module Qtc
   module Cli
@@ -34,7 +35,10 @@ module Qtc
         all = client.get("/vpn_containers", {}, {'Authorization' => "Bearer #{current_cloud_token}"})
         if all['results'][0]
           vpn = all['results'][0]
-          puts client.get("/vpn_containers/#{vpn['id']}", {}, {'Authorization' => "Bearer #{current_cloud_token}"})
+          vpn = client.get("/vpn_containers/#{vpn['id']}", {}, {'Authorization' => "Bearer #{current_cloud_token}"})
+          if vpn['vpn_config']
+            puts Base64.decode64(vpn['vpn_config'])
+          end
         end
       end
     end
