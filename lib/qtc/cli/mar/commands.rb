@@ -35,13 +35,12 @@ command 'mar restart' do |c|
 end
 
 command 'mar create' do |c|
-  c.syntax = 'qtc-cli mar create CLOUD_ID NAME'
+  c.syntax = 'qtc-cli mar create NAME'
   c.description = 'Create a new app instance'
   c.option '--size SIZE', String, 'App runtime size'
   c.action do |args, options|
-    raise ArgumentError.new('CLOUD_ID is required') if args[0].nil?
-    raise ArgumentError.new('NAME is required') if args[1].nil?
-    Qtc::Cli::Mar::Apps.new.create(args[0], args[1], options)
+    raise ArgumentError.new('NAME is required') if args[0].nil?
+    Qtc::Cli::Mar::Apps.new.create(args[0], options)
   end
 end
 
@@ -171,6 +170,7 @@ end
 command 'mar local:run' do |c|
   c.syntax = 'qtc-cli mar local:run'
   c.option '--clean', String, 'Force clean build'
+  c.option '--stack STRING', String, 'Define used stack (default: cedar-14)'
   c.description = 'Debug mar app locally (requires docker)'
   c.action do |args, options|
     Qtc::Cli::Mar::Debug.new.local_debug(args, options)
@@ -179,6 +179,7 @@ end
 
 command 'mar local:build_slug' do |c|
   c.syntax = 'qtc-cli mar local:build_slug'
+  c.option '--stack STRING', String, 'Define used stack (default: cedar-14)'
   c.description = 'Build mar app slug locally (requires docker)'
   c.action do |args, options|
     Qtc::Cli::Mar::Debug.new.local_build(options)

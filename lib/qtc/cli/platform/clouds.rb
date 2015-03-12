@@ -7,9 +7,21 @@ module Qtc::Cli::Platform
 
     def list
       accounts = platform_client.get('/user/accounts')
+      template = '%-40.40s %-40.40s'
+      puts template % ['ID', 'NAME']
       accounts['results'].each do |account|
-        print color("~ #{account['name']} (#{account['id']})", :bold)
+        name = account['name']
+        name = "* #{name}" if account['id'] == inifile['platform']['current_cloud']
+        puts template % [account['id'], name]
       end
+    end
+
+    def use(id)
+      account = platform_client.get("/accounts/#{id}")
+      puts "Using cloud: #{account['name']} (#{id})"
+      inifile['platform']['current_cloud'] = id
+      inifile['platform']['current_dc'] = account['datacenter']['id']
+      inifile.save(filename: ini_filename)
     end
   end
 end

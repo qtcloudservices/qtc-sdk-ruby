@@ -19,6 +19,10 @@ module Qtc
           end
         end
 
+        def mdb_datacenter_id
+          "mdb-#{current_cloud_dc}"
+        end
+
         ##
         # @return [Qtc::Client]
         def client

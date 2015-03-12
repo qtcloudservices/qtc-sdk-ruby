@@ -16,7 +16,6 @@ module Qtc
         instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
-          token = instance_data['authorizations'][0]['access_token']
           data = {
             name: instance_id,
             privateKey: File.read(File.expand_path(options.key)),
@@ -25,7 +24,7 @@ module Qtc
           unless options.chain.nil?
             data[:certificateChain] = File.read(File.expand_path(options.chain))
           end
-          client.post("/apps/#{instance_id}/ssl_certificate", data, {}, {'Authorization' => "Bearer #{token}"})
+          client.post("/apps/#{instance_id}/ssl_certificate", data, {}, {'Authorization' => "Bearer #{current_cloud_token}"})
         end
       end
 
@@ -33,8 +32,7 @@ module Qtc
         instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
-          token = instance_data['authorizations'][0]['access_token']
-          client.delete("/apps/#{instance_id}/ssl_certificate", {}, {}, {'Authorization' => "Bearer #{token}"})
+          client.delete("/apps/#{instance_id}/ssl_certificate", {}, {}, {'Authorization' => "Bearer #{current_cloud_token}"})
         end
       end
     end

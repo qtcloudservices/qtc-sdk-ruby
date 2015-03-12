@@ -8,8 +8,7 @@ module Qtc
         instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
-          token = instance_data['authorizations'][0]['access_token']
-          client.delete("/apps/#{instance_id}/build_cache", nil, {}, {'Authorization' => "Bearer #{token}"})
+          client.delete("/apps/#{instance_id}/build_cache", nil, {}, {'Authorization' => "Bearer #{current_cloud_token}"})
         end
       end
 
@@ -17,8 +16,7 @@ module Qtc
         instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
-          token = instance_data['authorizations'][0]['access_token']
-          client.delete("/apps/#{instance_id}/repository", nil, {}, {'Authorization' => "Bearer #{token}"})
+          client.delete("/apps/#{instance_id}/repository", nil, {}, {'Authorization' => "Bearer #{current_cloud_token}"})
         end
       end
     end

@@ -13,11 +13,19 @@ command 'datacenters' do |c|
   end
 end
 
-command 'clouds' do |c|
-  c.syntax = 'qtc-cli clouds'
+command 'clouds:list' do |c|
+  c.syntax = 'qtc-cli clouds:list'
   c.description = 'List all clouds'
   c.action do |args, options|
     Qtc::Cli::Platform::Clouds.new.list
+  end
+end
+
+command 'clouds:use' do |c|
+  c.syntax = 'qtc-cli clouds:use <id>'
+  c.description = 'Set default cloud to use'
+  c.action do |args, options|
+    Qtc::Cli::Platform::Clouds.new.use(args[0])
   end
 end
 

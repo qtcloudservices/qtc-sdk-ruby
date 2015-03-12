@@ -6,14 +6,11 @@ module Qtc
       include Qtc::Cli::Common
 
       def list
-        accounts = platform_client.get('/user/accounts')
-        accounts['results'].each do |account|
-          print color("== #{account['name']}: #{account['id']}")
-          instances = platform_client.get("/accounts/#{account['id']}/instances", {provider: 'mdb'})
-          instances['results'].each do |instance|
-            say(" ~ <%= color('#{instance['id']}', :green) %> #{instance['name']} <%= color('#{instance['tags'].join(', ')}', :yellow) %>")
-          end
-          puts ''
+        instances = platform_client(current_cloud_token).get("/accounts/#{current_cloud_id}/instances", {provider: 'mdb'})
+        template = "%-20.20s %-30.30s %-20.20s"
+        puts template % ["ID", "NAME", "TAGS"]
+        instances['results'].each do |instance|
+          puts template % [instance['id'], instance['name'], instance['tags'].join(',')]
         end
       end
 
@@ -24,14 +21,28 @@ module Qtc
         instance_id = options.id
         instance_data = instance_info(instance_id)
         if instance_data
-          token = instance_data['authorizations'][0]['access_token']
-          result = client.get("/services/#{instance_id}", nil,  {'Authorization' => "Bearer #{token}"})
+          result = client.get("/services/#{instance_id}", nil,  {'Authorization' => "Bearer #{current_cloud_token}"})
           puts "Id: #{result['id']}"
           puts "Name: #{result['name']}"
           puts "Type: #{result['image']['name']}"
           puts "Size: #{result['size'].to_i * 256}MB"
           puts "State: #{result['state']}"
         end
+      end
+
+      def create(name, options)
+        sizes = {'256m' => 1, '512m' => 2, '768m' => 3, '1024m' => 4}
+        size = sizes[options.size.to_s.to_sym] || 1
+        data = {
+            name: name,
+            serviceProviderId: 'mdb',
+            config: {
+                runtimeSize: size,
+                serviceImage: "qtcs/#{options.type}"
+            }
+        }
+        response = platform_client.post("/accounts/#{current_cloud_id}/instances", data)
+        puts response['id']
       end
 
       def logs(options)
@@ -45,8 +56,7 @@ module Qtc
         instance_id = options.id
         instance_data = instance_info(instance_id)
         if instance_data
-          token = instance_data['authorizations'][0]['access_token']
-          result = client.get("/services/#{instance_id}/logs", {offset: offset, limit: limit},  {'Authorization' => "Bearer #{token}"})
+          result = client.get("/services/#{instance_id}/logs", {offset: offset, limit: limit},  {'Authorization' => "Bearer #{current_cloud_token}"})
           result['results'].each do |r|
             line = ''
             line << "[#{r['time']}] " if options.timestamp == true
@@ -55,6 +65,7 @@ module Qtc
           end
         end
       end
+
     end
   end
 end
