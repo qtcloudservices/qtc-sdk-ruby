@@ -24,10 +24,35 @@ module Qtc
         end
       end
 
+      def start
+        self.datacenter_id = mdb_datacenter_id
+        result = client.get("/vpn_containers", {}, {'Authorization' => "Bearer #{current_cloud_token}"})
+        vpn = result['results'][0]
+        if vpn
+          client.post("/vpn_containers/#{vpn['id']}/start", {}, {}, {'Authorization' => "Bearer #{current_cloud_token}"})
+        else
+          puts "vpn not found, you can create vpn service with: qtc-cli mdb vpn:create"
+        end
+      end
+
+      def stop
+        self.datacenter_id = mdb_datacenter_id
+        result = client.get("/vpn_containers", {}, {'Authorization' => "Bearer #{current_cloud_token}"})
+        vpn = result['results'][0]
+        if vpn
+          client.post("/vpn_containers/#{vpn['id']}/stop", {}, {}, {'Authorization' => "Bearer #{current_cloud_token}"})
+        else
+          puts "vpn not found, you can create vpn service with: qtc-cli mdb vpn:create"
+        end
+      end
+
       def destroy
         self.datacenter_id = mdb_datacenter_id
-
-        client.delete("/vpn_containers", {}, {}, {'Authorization' => "Bearer #{current_cloud_token}"})
+        result = client.get("/vpn_containers", {}, {'Authorization' => "Bearer #{current_cloud_token}"})
+        vpn = result['results'][0]
+        if vpn
+          client.delete("/vpn_containers/#{vpn['id']}", {}, {}, {'Authorization' => "Bearer #{current_cloud_token}"})
+        end
       end
 
       def config(options)

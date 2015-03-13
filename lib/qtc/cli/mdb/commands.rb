@@ -59,6 +59,22 @@ command 'mdb vpn:show' do |c|
   end
 end
 
+command 'mdb vpn:start' do |c|
+  c.syntax = 'qtc-cli mdb vpn:start'
+  c.description = 'Start vpn server'
+  c.action do |args, options|
+    Qtc::Cli::Mdb::Vpn.new.start
+  end
+end
+
+command 'mdb vpn:stop' do |c|
+  c.syntax = 'qtc-cli mdb vpn:stop'
+  c.description = 'Stop vpn server'
+  c.action do |args, options|
+    Qtc::Cli::Mdb::Vpn.new.stop
+  end
+end
+
 command 'mdb vpn:remove' do |c|
   c.syntax = 'qtc-cli mdb vpn:remove'
   c.description = 'Remove vpn connection'
