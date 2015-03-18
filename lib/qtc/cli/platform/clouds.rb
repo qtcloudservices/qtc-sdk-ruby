@@ -23,5 +23,11 @@ module Qtc::Cli::Platform
       inifile['platform']['current_dc'] = account['datacenter']['id']
       inifile.save(filename: ini_filename)
     end
+
+    def create(name, opts)
+      datacenter = opts.datacenter || 'eu-1'
+      data = {name: name, datacenter: datacenter, vpc: opts.vpc}
+      platform_client.post('/accounts', data)
+    end
   end
 end

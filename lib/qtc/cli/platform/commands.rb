@@ -29,6 +29,16 @@ command 'clouds:use' do |c|
   end
 end
 
+command 'clouds:create' do |c|
+  c.syntax = 'qtc-cli clouds:create name'
+  c.description = 'Create a new cloud'
+  c.option '--datacenter STRING', String, 'Specify datacenter for this cloud (default: eu-1)'
+  c.option '--vpc', 'Enable virtual private cloud'
+  c.action do |args, options|
+    Qtc::Cli::Platform::Clouds.new.create(args.join(' '), options)
+  end
+end
+
 command 'login' do |c|
   c.syntax = 'qtc-cli login'
   c.description = 'Login to Qt Cloud Services'
