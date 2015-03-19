@@ -27,6 +27,14 @@ module Qtc
           puts "Type: #{result['image']['name']}"
           puts "Size: #{result['size'].to_i * 256}MB"
           puts "State: #{result['state']}"
+          puts "Ip address: #{result['ip_address']}"
+          puts "Port: #{result['port']}"
+          if result['username']
+            puts "Username: #{result['username']}"
+          end
+          if result['password']
+            puts "Password: #{result['password']}"
+          end
         end
       end
 
