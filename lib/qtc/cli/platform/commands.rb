@@ -2,6 +2,7 @@ module Qtc::Cli::Platform; end;
 
 require_relative 'datacenters'
 require_relative 'clouds'
+require_relative 'vpn'
 require_relative 'user'
 require_relative 'ssh_keys'
 
@@ -26,6 +27,54 @@ command 'clouds:use' do |c|
   c.description = 'Set default cloud to use'
   c.action do |args, options|
     Qtc::Cli::Platform::Clouds.new.use(args[0])
+  end
+end
+
+command 'vpn:create' do |c|
+  c.syntax = 'qtc-cli vpn:create'
+  c.description = 'Create vpn connection'
+  c.action do |args, options|
+    Qtc::Cli::Platform::Vpn.new.create
+  end
+end
+
+command 'vpn:show' do |c|
+  c.syntax = 'qtc-cli vpn:show'
+  c.description = 'Show vpn connection'
+  c.action do |args, options|
+    Qtc::Cli::Platform::Vpn.new.show
+  end
+end
+
+command 'vpn:start' do |c|
+  c.syntax = 'qtc-cli vpn:start'
+  c.description = 'Start vpn server'
+  c.action do |args, options|
+    Qtc::Cli::Platform::Vpn.new.start
+  end
+end
+
+command 'vpn:stop' do |c|
+  c.syntax = 'qtc-cli vpn:stop'
+  c.description = 'Stop vpn server'
+  c.action do |args, options|
+    Qtc::Cli::Platform::Vpn.new.stop
+  end
+end
+
+command 'vpn:remove' do |c|
+  c.syntax = 'qtc-cli vpn:remove'
+  c.description = 'Remove vpn connection'
+  c.action do |args, options|
+    Qtc::Cli::Platform::Vpn.new.destroy
+  end
+end
+
+command 'vpn:config' do |c|
+  c.syntax = 'qtc-cli vpn:config'
+  c.description = 'Show vpn configuration'
+  c.action do |args, options|
+    Qtc::Cli::Platform::Vpn.new.config
   end
 end
 

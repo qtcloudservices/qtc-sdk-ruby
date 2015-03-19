@@ -1,5 +1,4 @@
 require_relative 'instances'
-require_relative 'vpn'
 
 command 'mdb list' do |c|
   c.syntax = 'qtc-cli mdb list'
@@ -40,53 +39,5 @@ command 'mdb logs' do |c|
   c.option '--offset OFFSET', Integer, 'Offset'
   c.action do |args, options|
     Qtc::Cli::Mdb::Instances.new.logs(options)
-  end
-end
-
-command 'mdb vpn:create' do |c|
-  c.syntax = 'qtc-cli mdb vpn:create'
-  c.description = 'Create vpn connection'
-  c.action do |args, options|
-    Qtc::Cli::Mdb::Vpn.new.create(options)
-  end
-end
-
-command 'mdb vpn:show' do |c|
-  c.syntax = 'qtc-cli mdb vpn:show'
-  c.description = 'Show vpn connection'
-  c.action do |args, options|
-    Qtc::Cli::Mdb::Vpn.new.show(options)
-  end
-end
-
-command 'mdb vpn:start' do |c|
-  c.syntax = 'qtc-cli mdb vpn:start'
-  c.description = 'Start vpn server'
-  c.action do |args, options|
-    Qtc::Cli::Mdb::Vpn.new.start
-  end
-end
-
-command 'mdb vpn:stop' do |c|
-  c.syntax = 'qtc-cli mdb vpn:stop'
-  c.description = 'Stop vpn server'
-  c.action do |args, options|
-    Qtc::Cli::Mdb::Vpn.new.stop
-  end
-end
-
-command 'mdb vpn:remove' do |c|
-  c.syntax = 'qtc-cli mdb vpn:remove'
-  c.description = 'Remove vpn connection'
-  c.action do |args, options|
-    Qtc::Cli::Mdb::Vpn.new.destroy
-  end
-end
-
-command 'mdb vpn:config' do |c|
-  c.syntax = 'qtc-cli mdb vpn:config'
-  c.description = 'Show vpn configuration'
-  c.action do |args, options|
-    Qtc::Cli::Mdb::Vpn.new.config(options)
   end
 end
