@@ -5,37 +5,32 @@ module Qtc
     class Mar::Apps < Mar::Base
 
       def list
-        accounts = platform_client.get('/user/accounts')
-        accounts['results'].each do |account|
-          instances = platform_client.get("/accounts/#{account['id']}/instances", {provider: 'mar'})
-          if instances['results'].size > 0
-            print color("== #{account['name']} (#{account['datacenter']['id']}): #{account['id']}")
-            instances['results'].each do |instance|
-              say(" ~ <%= color('#{instance['id']}', :green) %> #{instance['name']} <%= color('#{instance['tags'].join(', ')}', :yellow) %>")
-            end
-            puts ''
+        instances = platform_client(current_cloud_token).get("/accounts/#{current_cloud_id}/instances", {provider: 'mar'})
+        if instances['results'].size > 0
+          template = "%-20.20s %-30.30s %-20.20s"
+          puts template % ["ID", "NAME", "TAGS"]
+          instances['results'].each do |instance|
+            puts template % [instance['id'], instance['name'], instance['tags'].join(',')]
           end
         end
       end
 
       def show(options)
         instance_id = resolve_instance_id(options)
-
-        instance_data = instance_info(instance_id)
-        if instance_data
-          token = instance_data['authorizations'][0]['access_token']
-          result = client.get("/apps/#{instance_id}", nil,  {'Authorization' => "Bearer #{token}"})
-          puts "Id: #{result['id']}"
-          puts "Name: #{result['name']}"
-          puts "Size: #{size_mapping[result['size'].to_s] || result['size']}"
-          puts "State: #{result['state']}"
-          puts "Structure: #{JSON.pretty_generate(result['structure'])}"
-          status = client.get("/apps/#{instance_id}/status", nil,  {'Authorization' => "Bearer #{token}"})
-          puts "Processes: #{JSON.pretty_generate(status['processes'])}"
-        end
+        result = client.get("/apps/#{instance_id}", nil,  {'Authorization' => "Bearer #{current_cloud_token}"})
+        puts "Id: #{result['id']}"
+        puts "Name: #{result['name']}"
+        puts "Size: #{size_mapping[result['size'].to_s] || result['size']}"
+        puts "State: #{result['state']}"
+        puts "Custom SSL: #{result['sslCertificate'].nil? ? 'no': 'yes'}"
+        env_vars = client.get("/apps/#{instance_id}/env_vars", {}, {'Authorization' => "Bearer #{current_cloud_token}"})
+        puts "Stack: #{env_vars['STACK']}"
+        puts "Structure: #{JSON.pretty_generate(result['structure'])}"
+        status = client.get("/apps/#{instance_id}/status", nil,  {'Authorization' => "Bearer #{current_cloud_token}"})
+        puts "Processes: #{JSON.pretty_generate(status['processes'])}"
       end
 
-      def create(cloud_id, name, options)
+      def create(name, options)
         sizes = {mini: 1, small: 2, medium: 4}
         size = sizes[options.size.to_s.to_sym] || 1
         data = {
@@ -46,7 +41,7 @@ module Qtc
                 runtimeType: 'app'
             }
         }
-        response = platform_client.post("/accounts/#{cloud_id}/instances", data)
+        response = platform_client.post("/accounts/#{current_cloud_id}/instances", data)
         puts response['id']
       end
 
@@ -54,10 +49,8 @@ module Qtc
         instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
-          token = instance_data['authorizations'][0]['access_token']
-          client.post("/apps/#{instance_id}/restart", {}, nil, {'Authorization' => "Bearer #{token}"})
+          client.post("/apps/#{instance_id}/restart", {}, nil, {'Authorization' => "Bearer #{current_cloud_token}"})
         end
-
       end
 
       def logs(options)
@@ -68,8 +61,7 @@ module Qtc
         instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
-          token = instance_data['authorizations'][0]['access_token']
-          result = client.get("/apps/#{instance_id}/logs", {offset: offset, limit: limit}, {'Authorization' => "Bearer #{token}"})
+          result = client.get("/apps/#{instance_id}/logs", {offset: offset, limit: limit}, {'Authorization' => "Bearer #{current_cloud_token}"})
           result['results'].each do |r|
             line = ''
             line << "[#{r['time']}] " if options.timestamp == true
@@ -83,8 +75,7 @@ module Qtc
         instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
-          token = instance_data['authorizations'][0]['access_token']
-          app = client.get("/apps/#{instance_id}", nil,  {'Authorization' => "Bearer #{token}"})
+          app = client.get("/apps/#{instance_id}", nil,  {'Authorization' => "Bearer #{current_cloud_token}"})
           structure = app['structure']
           scale = {}
           args.each do |type|
@@ -94,7 +85,7 @@ module Qtc
               scale[arr[0]] = arr[1]
             end
           end
-          client.post("/apps/#{instance_id}/scale", scale, {}, {'Authorization' => "Bearer #{token}"})
+          client.post("/apps/#{instance_id}/scale", scale, {}, {'Authorization' => "Bearer #{current_cloud_token}"})
         end
       end
 
@@ -102,12 +93,12 @@ module Qtc
         instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
-          token = instance_data['authorizations'][0]['access_token']
           data = {
               cmd: command,
               processId: options.process
           }
-          result = client.post("/apps/#{instance_id}/exec", data, {}, {'Authorization' => "Bearer #{token}"})
+          result = client.post("/apps/#{instance_id}/exec", data, {}, {'Authorization' => "Bearer #{current_cloud_token}"})
+          puts result['stderr']
           puts result['stdout']
         end
       end

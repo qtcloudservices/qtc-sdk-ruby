@@ -19,8 +19,7 @@ module Qtc
         end
         instance_data = instance_info(instance_id)
         if instance_data
-          token = instance_data['authorizations'][0]['access_token']
-          client.put("/apps/#{instance_id}/env_vars", env_vars, {}, {'Authorization' => "Bearer #{token}"})
+          client.put("/apps/#{instance_id}/env_vars", env_vars, {}, {'Authorization' => "Bearer #{current_cloud_token}"})
         end
       end
 
@@ -28,8 +27,7 @@ module Qtc
         instance_id = resolve_instance_id(options)
         instance_data = instance_info(instance_id)
         if instance_data
-          token = instance_data['authorizations'][0]['access_token']
-          env_vars = client.get("/apps/#{instance_id}/env_vars", {}, {'Authorization' => "Bearer #{token}"})
+          env_vars = client.get("/apps/#{instance_id}/env_vars", {}, {'Authorization' => "Bearer #{current_cloud_token}"})
           env_vars.each do |key, value|
             puts "#{key}=#{value}"
           end

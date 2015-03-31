@@ -4,6 +4,7 @@ require_relative 'ssl_certificates'
 require_relative 'env'
 require_relative 'repository'
 require_relative 'debug'
+require_relative 'stack'
 
 command 'mar list' do |c|
   c.syntax = 'qtc-cli mar list'
@@ -35,16 +36,35 @@ command 'mar restart' do |c|
 end
 
 command 'mar create' do |c|
-  c.syntax = 'qtc-cli mar create CLOUD_ID NAME'
+  c.syntax = 'qtc-cli mar create NAME'
   c.description = 'Create a new app instance'
   c.option '--size SIZE', String, 'App runtime size'
   c.action do |args, options|
-    raise ArgumentError.new('CLOUD_ID is required') if args[0].nil?
-    raise ArgumentError.new('NAME is required') if args[1].nil?
-    Qtc::Cli::Mar::Apps.new.create(args[0], args[1], options)
+    raise ArgumentError.new('NAME is required') if args[0].nil?
+    Qtc::Cli::Mar::Apps.new.create(args[0], options)
   end
 end
 
+command 'mar stack' do |c|
+  c.syntax = 'qtc-cli mar stack'
+  c.description = 'Get app stack'
+  c.option '--app APP', String, 'App instance id'
+  c.option '--remote REMOTE', String, 'Git remote to use, eg "staging"'
+  c.action do |args, options|
+    Qtc::Cli::Mar::Stack.new.show(args[0], options)
+  end
+end
+
+command 'mar stack:set' do |c|
+  c.syntax = 'qtc-cli mar stack:set STACK'
+  c.description = 'Set app stack'
+  c.option '--app APP', String, 'App instance id'
+  c.option '--remote REMOTE', String, 'Git remote to use, eg "staging"'
+  c.action do |args, options|
+    raise ArgumentError.new('STACK is required') if args[0].nil?
+    Qtc::Cli::Mar::Stack.new.update(args[0], options)
+  end
+end
 
 command 'mar scale' do |c|
   c.syntax = 'qtc-cli mar scale KEY=VALUE'
@@ -171,6 +191,7 @@ end
 command 'mar local:run' do |c|
   c.syntax = 'qtc-cli mar local:run'
   c.option '--clean', String, 'Force clean build'
+  c.option '--stack STRING', String, 'Define used stack (default: cedar-14)'
   c.description = 'Debug mar app locally (requires docker)'
   c.action do |args, options|
     Qtc::Cli::Mar::Debug.new.local_debug(args, options)
@@ -179,6 +200,7 @@ end
 
 command 'mar local:build_slug' do |c|
   c.syntax = 'qtc-cli mar local:build_slug'
+  c.option '--stack STRING', String, 'Define used stack (default: cedar-14)'
   c.description = 'Build mar app slug locally (requires docker)'
   c.action do |args, options|
     Qtc::Cli::Mar::Debug.new.local_build(options)

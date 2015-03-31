@@ -17,6 +17,18 @@ command 'mdb show' do |c|
   end
 end
 
+command 'mdb create' do |c|
+  c.syntax = 'qtc-cli mdb create NAME'
+  c.description = 'Create a new MDB instance'
+  c.option '--type TYPE', String, 'MDB type'
+  c.option '--size SIZE', String, 'MDB size'
+  c.action do |args, options|
+    raise ArgumentError.new('NAME is required') if args[0].nil?
+    raise ArgumentError.new('--type is required (example: mysql:5.6)') if options.type.nil?
+    Qtc::Cli::Mdb::Instances.new.create(args[0], options)
+  end
+end
+
 command 'mdb logs' do |c|
   c.syntax = 'qtc-cli mdb logs'
   c.description = 'Show MDB logs'

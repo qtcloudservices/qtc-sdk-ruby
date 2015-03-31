@@ -9,11 +9,13 @@ module Qtc::Cli::Platform
       datacenters = platform_client.get('/datacenters')
       inifile['datacenters'] = {}
 
+      template = '%-20.20s %-40.40s'
+      puts template % ['NAME', 'DESCRIPTION']
       datacenters['results'].each do |datacenter|
         datacenter['services'].each do |service|
           inifile['datacenters']["#{service['id']}-#{datacenter['id']}"] = service['url']
         end
-        print color("~ #{datacenter['id']} (#{datacenter['description']})", :bold)
+        puts template % [datacenter['id'], datacenter['description']]
       end
       inifile.save(filename: ini_filename)
     end
