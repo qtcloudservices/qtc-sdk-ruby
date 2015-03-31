@@ -1,3 +1,11 @@
+0.3.0
+-----------
+
+- Add support for cloud vpn
+- Add support for stack change
+- Refactor cli to use cloud tokens
+- Remove MWS support
+
 0.2.0
 -----------
 
