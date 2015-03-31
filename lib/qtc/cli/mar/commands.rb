@@ -4,6 +4,7 @@ require_relative 'ssl_certificates'
 require_relative 'env'
 require_relative 'repository'
 require_relative 'debug'
+require_relative 'stack'
 
 command 'mar list' do |c|
   c.syntax = 'qtc-cli mar list'
@@ -44,6 +45,26 @@ command 'mar create' do |c|
   end
 end
 
+command 'mar stack' do |c|
+  c.syntax = 'qtc-cli mar stack'
+  c.description = 'Get app stack'
+  c.option '--app APP', String, 'App instance id'
+  c.option '--remote REMOTE', String, 'Git remote to use, eg "staging"'
+  c.action do |args, options|
+    Qtc::Cli::Mar::Stack.new.show(args[0], options)
+  end
+end
+
+command 'mar stack:set' do |c|
+  c.syntax = 'qtc-cli mar stack:set STACK'
+  c.description = 'Set app stack'
+  c.option '--app APP', String, 'App instance id'
+  c.option '--remote REMOTE', String, 'Git remote to use, eg "staging"'
+  c.action do |args, options|
+    raise ArgumentError.new('STACK is required') if args[0].nil?
+    Qtc::Cli::Mar::Stack.new.update(args[0], options)
+  end
+end
 
 command 'mar scale' do |c|
   c.syntax = 'qtc-cli mar scale KEY=VALUE'
