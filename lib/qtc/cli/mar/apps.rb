@@ -17,18 +17,17 @@ module Qtc
 
       def show(options)
         instance_id = resolve_instance_id(options)
-
-        instance_data = instance_info(instance_id)
-        if instance_data
-          result = client.get("/apps/#{instance_id}", nil,  {'Authorization' => "Bearer #{current_cloud_token}"})
-          puts "Id: #{result['id']}"
-          puts "Name: #{result['name']}"
-          puts "Size: #{size_mapping[result['size'].to_s] || result['size']}"
-          puts "State: #{result['state']}"
-          puts "Structure: #{JSON.pretty_generate(result['structure'])}"
-          status = client.get("/apps/#{instance_id}/status", nil,  {'Authorization' => "Bearer #{current_cloud_token}"})
-          puts "Processes: #{JSON.pretty_generate(status['processes'])}"
-        end
+        result = client.get("/apps/#{instance_id}", nil,  {'Authorization' => "Bearer #{current_cloud_token}"})
+        puts "Id: #{result['id']}"
+        puts "Name: #{result['name']}"
+        puts "Size: #{size_mapping[result['size'].to_s] || result['size']}"
+        puts "State: #{result['state']}"
+        puts "Custom SSL: #{result['sslCertificate'].nil? ? 'no': 'yes'}"
+        env_vars = client.get("/apps/#{instance_id}/env_vars", {}, {'Authorization' => "Bearer #{current_cloud_token}"})
+        puts "Stack: #{env_vars['STACK']}"
+        puts "Structure: #{JSON.pretty_generate(result['structure'])}"
+        status = client.get("/apps/#{instance_id}/status", nil,  {'Authorization' => "Bearer #{current_cloud_token}"})
+        puts "Processes: #{JSON.pretty_generate(status['processes'])}"
       end
 
       def create(name, options)
@@ -52,7 +51,6 @@ module Qtc
         if instance_data
           client.post("/apps/#{instance_id}/restart", {}, nil, {'Authorization' => "Bearer #{current_cloud_token}"})
         end
-
       end
 
       def logs(options)
