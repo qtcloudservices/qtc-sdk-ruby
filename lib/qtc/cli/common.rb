@@ -54,7 +54,11 @@ module Qtc
           token = authorizations['results'][0]['access_token']
         rescue ArgumentError => e
           raise e
-        rescue
+        rescue Qtc::Errors::StandardError => e
+          if e.status == 404
+            raise ArgumentError.new("Cloud not found. Please specify used cloud first: qtc-cli clouds:use <id>")
+          end
+        rescue => e
           retry
         end
 
