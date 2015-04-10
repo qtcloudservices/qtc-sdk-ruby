@@ -203,7 +203,7 @@ command 'mar local:build_slug' do |c|
   c.option '--stack STRING', String, 'Define used stack (default: cedar-14)'
   c.description = 'Build mar app slug locally (requires docker)'
   c.action do |args, options|
-    Qtc::Cli::Mar::Debug.new.local_build(options)
+    Qtc::Cli::Mar::Debug.new.local_build_slug(options)
   end
 end
 

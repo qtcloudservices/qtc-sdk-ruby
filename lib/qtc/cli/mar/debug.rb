@@ -41,9 +41,10 @@ module Qtc
     end
 
     def local_build_slug(options)
+      stack = options.stack || 'cedar-14'
       app_home = File.realpath('.')
       puts "-----> Starting to build MAR app locally"
-      build_slug(app_home)
+      build_slug(app_home, stack)
     end
 
     def build_slug(app_home, stack)
