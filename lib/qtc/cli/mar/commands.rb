@@ -222,25 +222,26 @@ command 'mar exec' do |c|
 end
 
 command 'mar slug:upload' do |c|
-  c.syntax = 'qtc-cli mar slug:upload --slug=<path to slug.tgz> --process_types=<path to process types json>'
+  c.syntax = 'qtc-cli mar slug:upload --slug=<path to slug.tgz> --procfile=<path to Procfile> --tag <git hash or arbitrary unique tag>'
   c.description = 'Upload ready made slug into app'
   c.option '--app APP', String, 'App instance id'
   c.option '--slug SLUG', String, 'The path to the slug file'
-  c.option '--process_types PROC_TYPES', String, 'The process types json file'
   c.option '--procfile PROCFILE', String , 'The path to Procfile where the process types will be loaded'
+  c.option '--tag TAG', String, 'The tag to identify the slug. Could be e.g. commit hash if CD system is uploading the slug'
   c.action do |args, options|
     raise ArgumentError.new("--slug is required") unless options.slug
-    raise ArgumentError.new("either --process_types or --Procfile is required") unless options.process_types || options.procfile
+    raise ArgumentError.new("--procfile is required") unless options.procfile
+    raise ArgumentError.new("--tag is required") unless options.tag
     Qtc::Cli::Mar::Slugs.new.upload(options)
   end
 end
 
 command 'mar slug:deploy' do |c|
-  c.syntax = 'qtc-cli mar slug:deploy <id>'
+  c.syntax = 'qtc-cli mar slug:deploy <tag>'
   c.description = 'Deploy slug into app'
   c.option '--app APP', String, 'App instance id'
   c.action do |args, options|
-    raise ArgumentError.new("slug id required") if args.size == 0
+    raise ArgumentError.new("Slug identifier tag required") if args.size == 0
     Qtc::Cli::Mar::Slugs.new.deploy(args[0], options)
   end
 end
@@ -254,3 +255,12 @@ command 'mar slug:list' do |c|
   end
 end
 
+command 'mar slug:remove' do |c|
+  c.syntax = 'qtc-cli mar slug:remove <id>'
+  c.description = 'Removes a slug from system'
+  c.option '--app APP', String, 'App instance id'
+  c.action do |args, options|
+    raise ArgumentError.new("Slug identifier tag required") if args.size == 0
+    Qtc::Cli::Mar::Slugs.new.remove(args[0], options)
+  end
+end

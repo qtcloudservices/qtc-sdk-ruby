@@ -13,21 +13,26 @@ module Qtc
         instance_id = resolve_instance_id(options)
         slugs = client.get("/apps/#{instance_id}/slugs/", {}, {'Authorization' => "Bearer #{current_cloud_token}"})
         if slugs && slugs['results'].size > 0
-          template = "%-10.10s %-20.20s %-30.30s"
-          puts template % ["ID", "COMMIT", "CREATED"]
+          template = "%-20.20s %-30.30s %-30.30s"
+          puts template % ["TAG", "CREATED", "DEPLOYED"]
           slugs['results'].each do |slug|
-            puts template % [slug['id'], slug['commit'], slug['createdAt']]
+            puts template % [slug['tag'], slug['createdAt'], slug['deployedAt']]
           end
         end
       end
 
+      def remove(slug_id, options)
+        instance_id = resolve_instance_id(options)
+        client.delete("/apps/#{instance_id}/slugs/#{slug_id}", {}, {}, {'Authorization' => "Bearer #{current_cloud_token}"})
+      end
+
       def upload(options)
         instance_id = resolve_instance_id(options)
-        process_types = resolve_proc_types(options)
 
-        slug = create_slug(instance_id, process_types)
+        slug = create_slug(instance_id, options)
         upload_uri = URI(slug['blob']['url'])
-        puts "---- Starting slug upload, if your slug is large this may take a while"
+        puts "Starting slug upload, if your slug is large this may take a while"
+        # todo Would be nice to have some sort of progress indication...
         begin
           open(File.new(options.slug), 'rb') do |io|
             aws_client = Net::HTTP.new(upload_uri.host)
@@ -42,7 +47,7 @@ module Qtc
           puts "Slug upload failed:#{exc.to_s}"
           raise StandardError "Slug upload failed!"
         end
-        puts "Slug uploaded successfully, you may now deploy it using id: #{slug['id']}"
+        puts "Slug uploaded successfully, you may now deploy it using commit tag: #{slug['tag']}"
       end
 
       def deploy(slug_id, options)
@@ -50,9 +55,13 @@ module Qtc
         client.post("/apps/#{instance_id}/slugs/#{slug_id}/deploy", {}, {},  {'Authorization' => "Bearer #{current_cloud_token}"})
       end
 
-      def create_slug(instance_id, process_types)
-        result = client.post("/apps/#{instance_id}/slugs", process_types, {},  {'Authorization' => "Bearer #{current_cloud_token}"})
-        result
+      def create_slug(instance_id, options)
+        process_types = resolve_proc_types(options)
+        data = {
+            tag: options.tag,
+            process_types: process_types
+        }
+        client.post("/apps/#{instance_id}/slugs", data, {},  {'Authorization' => "Bearer #{current_cloud_token}"})
       end
 
       def resolve_proc_types(options)
@@ -62,7 +71,7 @@ module Qtc
           procfile_hash.merge!(procfile) if procfile
           procfile_hash
         else
-          JSON.parse(File.read(options.process_types, :encoding => 'utf-8'))
+          raise StandardError 'Procfile must be given'
         end
       end
     end
