@@ -1,6 +1,11 @@
+0.4.0
+-----------
+- Add support for slug upload & deploy functionality: qtc-cli mar slug:upload ...; qtc-cli mar slug:deploy v1.2
+
 0.3.1
 -----------
 - Fix mar local:build_slug
+
 
 0.3.0
 -----------
