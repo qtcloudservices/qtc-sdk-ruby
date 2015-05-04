@@ -7,16 +7,18 @@ module Qtc
 
       def local_debug(commands, options)
         app_home = File.realpath('.')
-        docker_id = nil
         stack = options.stack || 'cedar-14'
+        branch = options.branch || 'master'
         puts "-----> Starting to build MAR app locally"
+        puts "       Using stack: #{stack}"
+        puts "       Using git branch: #{branch}"
 
         if options.clean == true && File.exists?("#{app_home}/slug.tgz")
           File.delete("#{app_home}/slug.tgz")
         end
 
         unless File.exists?("#{app_home}/slug.tgz")
-          docker_id = build_slug(app_home, stack)
+          build_slug(app_home, stack, branch)
         else
           puts "       Existing slug.tgz found, build not needed."
         end
@@ -42,18 +44,22 @@ module Qtc
 
     def local_build_slug(options)
       stack = options.stack || 'cedar-14'
+      branch = options.branch || 'master'
       app_home = File.realpath('.')
       puts "-----> Starting to build MAR app locally"
-      build_slug(app_home, stack)
+      puts "       Using stack: #{stack}"
+      puts "       Using git branch: #{branch}"
+      build_slug(app_home, stack, branch)
     end
 
-    def build_slug(app_home, stack)
+    def build_slug(app_home, stack, branch)
       docker_id = nil
-      run_opts = ''
+      run_opts = '-i -a stdin'
       if File.exists?("#{app_home}/.env")
         run_opts << "--env-file=#{app_home}/.env"
       end
-      Open3.popen3("docker run -d #{run_opts} -v #{app_home}:/tmp/gitrepo:r qtcs/slugbuilder:#{stack}") {|stdin, stdout, stderr, wait_thr|
+      Open3.popen3("git archive #{branch} | docker run #{run_opts} qtcs/slugbuilder:#{stack}") {|stdin, stdout, stderr, wait_thr|
+        stdin.close
         docker_id = stdout.gets
         if docker_id
           docker_id.strip!

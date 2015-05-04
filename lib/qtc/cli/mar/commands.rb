@@ -193,6 +193,7 @@ command 'mar local:run' do |c|
   c.syntax = 'qtc-cli mar local:run'
   c.option '--clean', String, 'Force clean build'
   c.option '--stack STRING', String, 'Define used stack (default: cedar-14)'
+  c.option '--branch STRING', String, 'Define used git branch (default: master)'
   c.description = 'Debug mar app locally (requires docker)'
   c.action do |args, options|
     Qtc::Cli::Mar::Debug.new.local_debug(args, options)
@@ -202,6 +203,7 @@ end
 command 'mar local:build_slug' do |c|
   c.syntax = 'qtc-cli mar local:build_slug'
   c.option '--stack STRING', String, 'Define used stack (default: cedar-14)'
+  c.option '--branch STRING', String, 'Define used git branch (default: master)'
   c.description = 'Build mar app slug locally (requires docker)'
   c.action do |args, options|
     Qtc::Cli::Mar::Debug.new.local_build_slug(options)
