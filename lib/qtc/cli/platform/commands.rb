@@ -91,8 +91,9 @@ end
 command 'login' do |c|
   c.syntax = 'qtc-cli login'
   c.description = 'Login to Qt Cloud Services'
+  c.option '--token STRING', String, 'Personal access token'
   c.action do |args, options|
-    Qtc::Cli::Platform::User.new.login
+    Qtc::Cli::Platform::User.new.login(options)
   end
 end
 
