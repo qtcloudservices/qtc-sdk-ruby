@@ -1,5 +1,7 @@
 # Qt Cloud Services SDK for Ruby
 
+[![Build Status](https://travis-ci.org/qtcloudservices/qtc-sdk-ruby.svg?branch=master)](https://travis-ci.org/qtcloudservices/qtc-sdk-ruby)
+
 This is Qt Cloud Services SDK for Ruby. What is Qt Cloud Services? See below:
 
 * The Qt Cloud Services home page is at https://www.qtc.io
@@ -30,10 +32,6 @@ And then execute:
 Or install it yourself as:
 
     $ gem install qtc-sdk
-
-## Usage
-
-TODO: Write usage instructions here
 
 ## Contributing
 
