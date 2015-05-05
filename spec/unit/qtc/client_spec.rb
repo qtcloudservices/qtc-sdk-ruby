@@ -26,7 +26,7 @@ describe Qtc::Client do
     it 'sends GET request with correct parameters' do
       params = {test: 1}
       headers = {'X-Test-Header' => 'some_value'}
-      test_client.http_client.should_receive(:get).with(
+      expect(test_client.http_client).to receive(:get).with(
           'https://api.qtc.io/v1/ping',
           params,
           hash_including(headers)
@@ -36,7 +36,7 @@ describe Qtc::Client do
 
     it 'raises exception when response is an error' do
       data = {name: 'Test'}
-      test_client.http_client.should_receive(:get).and_return(double(:response, status: 400).as_null_object)
+      expect(test_client.http_client).to receive(:get).and_return(double(:response, status: 400).as_null_object)
       expect {
         test_client.get('/v1/instances', data)
       }.to raise_error(Qtc::Errors::StandardError)
@@ -44,7 +44,7 @@ describe Qtc::Client do
 
     it 'returns parsed json responses' do
       data = {'name' => 'Test'}
-      test_client.http_client.should_receive(:get).and_return(double(:response, status: 200, body: data.to_json).as_null_object)
+      expect(test_client.http_client).to receive(:get).and_return(double(:response, status: 200, body: data.to_json).as_null_object)
       resp = test_client.get('/v1/instances', data)
       expect(resp).to eq(data)
     end
@@ -55,7 +55,7 @@ describe Qtc::Client do
       data = {name: 'Test'}
       params = {test: 1}
       headers = {'Authorization' => 'Bearer token'}
-      test_client.http_client.should_receive(:post).with(
+      expect(test_client.http_client).to receive(:post).with(
           'https://api.qtc.io/v1/accounts',
           {
               header: hash_including(headers),
@@ -68,7 +68,7 @@ describe Qtc::Client do
 
     it 'raises exception when response is an error' do
       data = {name: 'Test'}
-      test_client.http_client.should_receive(:post).and_return(double(:response, status: 400).as_null_object)
+      expect(test_client.http_client).to receive(:post).and_return(double(:response, status: 400).as_null_object)
       expect {
         test_client.post('/v1/accounts', data)
       }.to raise_error(Qtc::Errors::StandardError)
@@ -76,7 +76,7 @@ describe Qtc::Client do
 
     it 'returns parsed json responses' do
       data = {'name' => 'Test'}
-      test_client.http_client.should_receive(:post).and_return(double(:response, status: 201, body: data.to_json).as_null_object)
+      expect(test_client.http_client).to receive(:post).and_return(double(:response, status: 201, body: data.to_json).as_null_object)
       resp = test_client.post('/v1/accounts', data)
       expect(resp).to eq(data)
     end
@@ -87,7 +87,7 @@ describe Qtc::Client do
       data = {name: 'Test'}
       params = {test: 1}
       headers = {'Authorization' => 'Bearer token'}
-      test_client.http_client.should_receive(:put).with(
+      expect(test_client.http_client).to receive(:put).with(
           'https://api.qtc.io/v1/accounts',
           {
               header: hash_including(headers),
@@ -100,7 +100,7 @@ describe Qtc::Client do
 
     it 'raises exception when response is an error' do
       data = {name: 'Test'}
-      test_client.http_client.should_receive(:put).and_return(double(:response, status: 400).as_null_object)
+      expect(test_client.http_client).to receive(:put).and_return(double(:response, status: 400).as_null_object)
       expect {
         test_client.put('/v1/accounts', data)
       }.to raise_error(Qtc::Errors::StandardError)
@@ -108,7 +108,7 @@ describe Qtc::Client do
 
     it 'returns parsed json responses' do
       data = {'name' => 'Test'}
-      test_client.http_client.should_receive(:put).and_return(double(:response, status: 201, body: data.to_json).as_null_object)
+      expect(test_client.http_client).to receive(:put).and_return(double(:response, status: 201, body: data.to_json).as_null_object)
       resp = test_client.put('/v1/accounts', data)
       expect(resp).to eq(data)
     end
@@ -119,7 +119,7 @@ describe Qtc::Client do
       data = {name: 'Test'}
       params = {test: 1}
       headers = {'Authorization' => 'Bearer token'}
-      test_client.http_client.should_receive(:delete).with(
+      expect(test_client.http_client).to receive(:delete).with(
           'https://api.qtc.io/v1/accounts',
           {
               header: hash_including(headers),
@@ -132,7 +132,7 @@ describe Qtc::Client do
 
     it 'raises exception when response is an error' do
       data = {name: 'Test'}
-      test_client.http_client.should_receive(:delete).and_return(double(:response, status: 400).as_null_object)
+      expect(test_client.http_client).to receive(:delete).and_return(double(:response, status: 400).as_null_object)
       expect {
         test_client.delete('/v1/accounts', data)
       }.to raise_error(Qtc::Errors::StandardError)
@@ -140,7 +140,7 @@ describe Qtc::Client do
 
     it 'returns parsed json responses' do
       data = {'name' => 'Test'}
-      test_client.http_client.should_receive(:delete).and_return(double(:response, status: 200, body: data.to_json).as_null_object)
+      expect(test_client.http_client).to receive(:delete).and_return(double(:response, status: 200, body: data.to_json).as_null_object)
       resp = test_client.delete('/v1/accounts', data)
       expect(resp).to eq(data)
     end
