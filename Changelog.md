@@ -1,3 +1,8 @@
+HEAD
+-----------
+- fix mar local:build_slug against remote docker
+- allow to set personal access token via --token option
+
 0.4.0
 -----------
 - Add support for slug upload & deploy functionality: qtc-cli mar slug:upload ...; qtc-cli mar slug:deploy v1.2
