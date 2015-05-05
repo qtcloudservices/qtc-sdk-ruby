@@ -1,4 +1,4 @@
-HEAD
+0.4.1
 -----------
 - fix mar local:build_slug against remote docker
 - allow to set personal access token via --token option
