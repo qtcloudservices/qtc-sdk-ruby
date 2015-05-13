@@ -41,3 +41,21 @@ command 'mdb logs' do |c|
     Qtc::Cli::Mdb::Instances.new.logs(options)
   end
 end
+
+command 'mdb stop' do |c|
+  c.syntax = 'qtc-cli mdb stop'
+  c.description = 'Stop MDB instance'
+  c.option '--id ID', String, 'MDB instance id'
+  c.action do |args, options|
+    Qtc::Cli::Mdb::Instances.new.stop(options)
+  end
+end
+
+command 'mdb start' do |c|
+  c.syntax = 'qtc-cli mdb start'
+  c.description = 'Start MDB instance'
+  c.option '--id ID', String, 'MDB instance id'
+  c.action do |args, options|
+    Qtc::Cli::Mdb::Instances.new.start(options)
+  end
+end

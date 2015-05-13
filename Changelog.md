@@ -1,3 +1,8 @@
+0.5.0
+-----------
+- MDB supports now start and stop commands
+- fixed issue in slug building when .env file is appended into build env
+
 0.4.1
 -----------
 - fix mar local:build_slug against remote docker

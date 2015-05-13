@@ -6,11 +6,11 @@ require 'qtc/version'
 Gem::Specification.new do |spec|
   spec.name          = 'qtc-sdk'
   spec.version       = Qtc::VERSION
-  spec.authors       = ['Jari Kolehmainen']
-  spec.email         = ['jari.kolehmainen@digia.com']
+  spec.authors       = ['Jari Kolehmainen', 'Jussi Nummelin']
+  spec.email         = ['jari.kolehmainen@digia.com', 'jussi.nummelin@digia.com']
   spec.summary       = %q{Qt Cloud Services SDK for Ruby}
   spec.description   = %q{Qt Cloud Services SDK for Ruby}
-  spec.homepage      = 'https://github.com/jakolehm/qtc-sdk-ruby'
+  spec.homepage      = 'https://github.com/qtcloudservices/qtc-sdk-ruby'
   spec.license       = 'MIT'
   spec.required_ruby_version = '>= 1.9.3'
 

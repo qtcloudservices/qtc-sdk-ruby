@@ -54,11 +54,14 @@ module Qtc
 
     def build_slug(app_home, stack, branch)
       docker_id = nil
-      run_opts = '-i -a stdin'
+      run_opts = [
+          '-i',
+          '-a stdin'
+      ]
       if File.exists?("#{app_home}/.env")
         run_opts << "--env-file=#{app_home}/.env"
       end
-      Open3.popen3("git archive #{branch} | docker run #{run_opts} qtcs/slugbuilder:#{stack}") {|stdin, stdout, stderr, wait_thr|
+      Open3.popen3("git archive #{branch} | docker run #{run_opts.join(' ')} qtcs/slugbuilder:#{stack}") {|stdin, stdout, stderr, wait_thr|
         stdin.close
         docker_id = stdout.gets
         if docker_id

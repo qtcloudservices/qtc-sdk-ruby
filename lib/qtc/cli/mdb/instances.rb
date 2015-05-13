@@ -74,6 +74,20 @@ module Qtc
         end
       end
 
+      def stop(options)
+        raise ArgumentError.new('--id is required') if options.id.nil?
+        self.datacenter_id = self.resolve_datacenter_id(options.id)
+
+        client.post("/services/#{options.id}/stop", {}, {},  {'Authorization' => "Bearer #{current_cloud_token}"})
+      end
+
+      def start(options)
+        raise ArgumentError.new('--id is required') if options.id.nil?
+        self.datacenter_id = self.resolve_datacenter_id(options.id)
+
+        client.post("/services/#{options.id}/start", {}, {},  {'Authorization' => "Bearer #{current_cloud_token}"})
+      end
+
     end
   end
 end
